@@ -545,6 +545,10 @@
           <label for="f-nome">Nome</label>
           <input type="text" id="f-nome" placeholder="Come ti chiami?">
         </div>
+        <div class="field-name">
+          <label for="f-missione">Missione Attuale</label>
+          <input type="text" id="f-missione" placeholder="Es. Cacciatore e Preda...">
+        </div>
       </div>
 
       <div class="stats-row">
@@ -803,7 +807,7 @@ const STORAGE_KEY = "aaf_scheda_v1";
 const defaultState = {
   character: {
     nome:"", xp:0, sanita:0, vita:0, indizi:0, cibo:0, candele:0,
-    keywords:"",
+    keywords:"", missione:"",
     ferite:[], cicatrici:[], abilita:[], arcane:[], equip:[], libri:[],
     weapons:[]
   },
@@ -910,8 +914,10 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 /* ---------- Identity & keywords ---------- */
 const fNome = document.getElementById('f-nome');
 const fKeywords = document.getElementById('f-keywords');
+const fMissione = document.getElementById('f-missione');
 fNome.addEventListener('input', ()=>{ state.character.nome = fNome.value; saveState(); });
 fKeywords.addEventListener('input', ()=>{ state.character.keywords = fKeywords.value; saveState(); });
+fMissione.addEventListener('input', ()=>{ state.character.missione = fMissione.value; saveState(); });
 
 /* ---------- Stat boxes ---------- */
 document.querySelectorAll('.stat-box').forEach(box=>{
@@ -1276,6 +1282,7 @@ importFileInput.addEventListener('change', async ()=>{
 function render(){
   fNome.value = state.character.nome;
   fKeywords.value = state.character.keywords;
+  fMissione.value = state.character.missione || "";
   document.querySelectorAll('.stat-box').forEach(box=>{
     const key = box.dataset.stat;
     box.querySelector('.val').textContent = state.character[key]||0;
