@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Alone Against Fear — Scheda Digitale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Crimson+Text:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#121310;
+    --void-2:#1a1b16;
+    --paper:#e6ddc3;
+    --paper-2:#dcd2b4;
+    --ink:#2a2318;
+    --ink-soft:#5a4f3c;
+    --blood:#7c2320;
+    --blood-bright:#a8342f;
+    --sanity:#4f5c3e;
+    --sanity-bright:#6b7d54;
+    --beam:#c99a3d;
+    --beam-dim:#8a6b2a;
+    --rule:#b9ad8a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 600px at 50% -10%, rgba(201,154,61,0.10), transparent 60%),
+      radial-gradient(ellipse 1200px 900px at 80% 110%, rgba(124,35,32,0.08), transparent 60%),
+      var(--void);
+    color:var(--ink);
+    font-family:'Crimson Text', serif;
+    min-height:100vh;
+    padding:18px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+
+  /* ---- Masthead ---- */
+  .masthead{
+    text-align:center;
+    margin-bottom:18px;
+    color:var(--paper);
+  }
+  .masthead .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:3px;
+    color:var(--beam);
+    text-transform:uppercase;
+    opacity:0.85;
+  }
+  .masthead h1{
+    font-family:'Special Elite', monospace;
+    font-size:clamp(28px,5vw,44px);
+    margin:6px 0 4px;
+    letter-spacing:1px;
+    text-shadow:0 0 18px rgba(201,154,61,0.25);
+  }
+  .masthead .sub{
+    font-size:14px;
+    color:#b8ae90;
+    font-style:italic;
+  }
+
+  /* ---- Tabs (folder tabs) ---- */
+  .tabs{
+    display:flex;
+    gap:4px;
+    padding:0 8px;
+    position:relative;
+    z-index:2;
+    flex-wrap:wrap;
+  }
+  .tab-btn{
+    font-family:'Special Elite', monospace;
+    font-size:13px;
+    letter-spacing:0.5px;
+    background:var(--paper-2);
+    color:var(--ink-soft);
+    border:1px solid rgba(0,0,0,0.25);
+    border-bottom:none;
+    padding:10px 18px 12px;
+    border-radius:8px 8px 0 0;
+    cursor:pointer;
+    transform:translateY(4px);
+    transition:transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+    opacity:0.75;
+  }
+  .tab-btn:hover{opacity:1;}
+  .tab-btn.active{
+    background:var(--paper);
+    color:var(--ink);
+    transform:translateY(0);
+    opacity:1;
+    box-shadow:0 -2px 12px rgba(0,0,0,0.3);
+  }
+  .tab-btn:focus-visible{outline:2px solid var(--beam);outline-offset:2px;}
+
+  /* ---- Sheet (paper) ---- */
+  .sheet{
+    background:var(--paper);
+    border-radius:2px 10px 10px 10px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.2);
+    padding:26px 26px 34px;
+    position:relative;
+  }
+  .sheet::after{
+    content:"";
+    position:absolute;
+    left:0;right:0;bottom:-8px;height:16px;
+    background:var(--paper);
+    clip-path:polygon(0% 0%,3% 100%,7% 20%,12% 100%,17% 10%,23% 100%,29% 15%,35% 100%,41% 5%,47% 100%,53% 20%,59% 100%,65% 10%,71% 100%,77% 15%,83% 100%,89% 5%,95% 100%,100% 0%);
+    opacity:0.9;
+  }
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  h2.section-title{
+    font-family:'Special Elite', monospace;
+    font-size:19px;
+    margin:0 0 14px;
+    padding-bottom:8px;
+    border-bottom:2px solid var(--blood);
+    color:var(--blood);
+    letter-spacing:0.5px;
+  }
+  h3.sub-title{
+    font-family:'Special Elite', monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin:22px 0 8px;
+  }
+
+  /* ---- Top identity row ---- */
+  .identity-row{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:6px;
+  }
+  .field-name{flex:1 1 220px;}
+  label{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:3px;
+  }
+  input[type=text], input[type=number], textarea{
+    width:100%;
+    font-family:'Crimson Text',serif;
+    font-size:16px;
+    color:var(--ink);
+    background:rgba(255,255,255,0.35);
+    border:none;
+    border-bottom:2px solid var(--rule);
+    padding:6px 4px;
+    outline:none;
+  }
+  input[type=text]:focus, input[type=number]:focus, textarea:focus{border-bottom-color:var(--blood);}
+
+  /* ---- Stat boxes ---- */
+  .stats-row{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin:16px 0 6px;
+  }
+  .stat-box{
+    background:linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.1));
+    border:1px solid rgba(0,0,0,0.25);
+    border-radius:6px;
+    padding:10px 12px;
+    min-width:100px;
+    text-align:center;
+    flex:1 1 100px;
+  }
+  .stat-box.danger{border-color:var(--blood);}
+  .stat-box.sanity{border-color:var(--sanity);}
+  .stat-box label{text-align:center;}
+  .stat-controls{display:flex;align-items:center;justify-content:center;gap:8px;}
+  .stat-controls button{
+    width:26px;height:26px;
+    border-radius:50%;
+    border:1px solid var(--ink-soft);
+    background:var(--paper-2);
+    color:var(--ink);
+    font-size:15px;
+    line-height:1;
+    cursor:pointer;
+  }
+  .stat-controls button:hover{background:var(--beam);border-color:var(--beam-dim);}
+  .stat-controls .val{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:22px;
+    min-width:34px;
+    text-align:center;
+  }
+  .stat-box.danger .val{color:var(--blood-bright);}
+  .stat-box.sanity .val{color:var(--sanity-bright);}
+
+  /* ---- Chip lists ---- */
+  .chip-input-row{display:flex;gap:8px;margin-bottom:8px;}
+  .chip-input-row input{flex:1;}
+  .chip-input-row button.add-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    background:var(--sanity);
+    color:var(--paper);
+    border:none;
+    border-radius:5px;
+    padding:0 16px;
+    cursor:pointer;
+  }
+  .chip-input-row button.add-btn:hover{background:var(--sanity-bright);}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;min-height:12px;}
+  .chip{
+    background:rgba(0,0,0,0.06);
+    border:1px solid rgba(0,0,0,0.2);
+    border-radius:14px;
+    padding:5px 10px 5px 12px;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .chip .rm{
+    cursor:pointer;
+    color:var(--blood);
+    font-weight:700;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .empty-hint{color:var(--ink-soft);font-style:italic;font-size:13px;}
+
+  /* ---- Weapons table ---- */
+  .weapons-table{width:100%;border-collapse:collapse;margin-bottom:8px;}
+  .weapons-table th{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--ink-soft);
+    text-align:left;
+    padding:4px 6px;
+    border-bottom:1px solid var(--rule);
+  }
+  .weapons-table td{padding:4px 6px;}
+  .weapons-table input[type=text]{border-bottom:1px solid var(--rule);}
+  .weapons-table input.ammo{
+    width:70px;
+    font-family:'JetBrains Mono',monospace;
+    text-align:center;
+  }
+  .weapons-table .rm-row{
+    cursor:pointer;color:var(--blood);font-family:'JetBrains Mono',monospace;font-weight:700;
+    background:none;border:none;font-size:15px;
+  }
+  .small-add{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    background:none;
+    border:1px dashed var(--ink-soft);
+    color:var(--ink-soft);
+    border-radius:5px;
+    padding:5px 12px;
+    cursor:pointer;
+  }
+  .small-add:hover{border-color:var(--blood);color:var(--blood);}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  @media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+
+  /* ---- Footer bar ---- */
+  .footer-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:16px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .save-status{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--paper);
+    opacity:0.6;
+  }
+  .btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.5px;
+    background:var(--blood);
+    color:var(--paper);
+    border:none;
+    border-radius:5px;
+    padding:8px 16px;
+    cursor:pointer;
+  }
+  .btn:hover{background:var(--blood-bright);}
+  .btn.ghost{
+    background:none;
+    border:1px solid var(--paper);
+    color:var(--paper);
+  }
+  .btn.ghost:hover{background:rgba(255,255,255,0.1);}
+  .btn.ghost.on-paper{
+    border-color:var(--ink-soft);
+    color:var(--ink-soft);
+  }
+  .btn.ghost.on-paper:hover{background:rgba(0,0,0,0.06);}
+
+  /* ---- Map ---- */
+  .map-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+  .map-toolbar .grp{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);}
+  .map-toolbar button{
+    width:24px;height:24px;border-radius:4px;border:1px solid var(--ink-soft);
+    background:var(--paper-2);cursor:pointer;font-size:13px;
+  }
+  .map-legend{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;
+  }
+  .map-legend span{display:inline-flex;align-items:center;gap:5px;}
+  .legend-swatch{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,0.3);}
+  .map-grid-wrap{overflow-x:auto;padding-bottom:6px;}
+  .map-grid{
+    display:grid;
+    gap:3px;
+    width:max-content;
+  }
+  .cell{
+    width:38px;height:38px;
+    background:rgba(255,255,255,0.3);
+    border:1px solid rgba(0,0,0,0.25);
+    border-radius:3px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;font-weight:700;
+    cursor:pointer;
+    position:relative;
+    color:var(--ink);
+    user-select:none;
+  }
+  .cell:hover{background:rgba(201,154,61,0.35);}
+  .cell.numbered{background:rgba(90,110,70,0.35);border-color:var(--sanity);}
+  .cell.searched{background:rgba(124,35,32,0.28);border-color:var(--blood);}
+  .cell .note-dot{
+    position:absolute;top:2px;right:2px;
+    width:6px;height:6px;border-radius:50%;
+    background:var(--beam);
+  }
+  .map-hint{
+    font-size:13px;color:var(--ink-soft);font-style:italic;margin-top:10px;
+  }
+
+  /* ---- Reference tab ---- */
+  .ref-block{margin-bottom:18px;}
+  .ref-block p{margin:4px 0;line-height:1.5;font-size:15px;}
+  .ref-block .lbl{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--blood);
+    display:block;
+    margin-bottom:2px;
+  }
+
+  /* ---- Dice tab ---- */
+  .dice-panel{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+  }
+  @media (max-width:640px){.dice-panel{grid-template-columns:1fr;}}
+  .dice-card{
+    background:rgba(255,255,255,0.3);
+    border:1px solid rgba(0,0,0,0.2);
+    border-radius:8px;
+    padding:16px;
+  }
+  .dice-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px;}
+  .dice-field{flex:1 1 80px;}
+  .dice-field label{margin-bottom:4px;}
+  .checkbox-row{display:flex;align-items:center;gap:6px;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);}
+  .checkbox-row input{width:auto;}
+  .preset-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+  .preset-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    background:var(--paper-2);
+    border:1px solid var(--ink-soft);
+    border-radius:5px;
+    padding:6px 12px;
+    cursor:pointer;
+  }
+  .preset-btn:hover{background:var(--beam);border-color:var(--beam-dim);}
+  .roll-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+    letter-spacing:0.5px;
+    background:var(--blood);
+    color:var(--paper);
+    border:none;
+    border-radius:6px;
+    padding:10px 20px;
+    cursor:pointer;
+    width:100%;
+  }
+  .roll-btn:hover{background:var(--blood-bright);}
+  .dice-result{
+    margin-top:14px;
+    text-align:center;
+  }
+  .dice-result .total{
+    font-family:'JetBrains Mono',monospace;
+    font-size:38px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .dice-result .breakdown{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  .dice-result .outcome{
+    margin-top:6px;
+    font-family:'Special Elite',monospace;
+    font-size:16px;
+  }
+  .outcome.success{color:var(--sanity-bright);}
+  .outcome.fail{color:var(--blood-bright);}
+  .dice-history{
+    margin-top:10px;
+    max-height:180px;
+    overflow-y:auto;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .dice-history .entry{
+    display:flex;
+    justify-content:space-between;
+    padding:4px 0;
+    border-bottom:1px dashed var(--rule);
+  }
+  .dice-history .clear-hist{
+    margin-top:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    text-decoration:underline;
+    cursor:pointer;
+    padding:0;
+  }
+
+  /* ---- Custom modal (replaces confirm/prompt) ---- */
+  .modal-overlay{
+    position:fixed;inset:0;
+    background:rgba(10,10,8,0.7);
+    display:none;
+    align-items:center;justify-content:center;
+    z-index:1000;
+    padding:20px;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal-box{
+    background:var(--paper);
+    border-radius:8px;
+    padding:22px;
+    max-width:420px;
+    width:100%;
+    box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  }
+  .modal-box h3{
+    font-family:'Special Elite',monospace;
+    font-size:16px;
+    color:var(--blood);
+    margin:0 0 12px;
+  }
+  .modal-box p{margin:0 0 14px;font-size:15px;line-height:1.5;}
+  .modal-box input[type=text]{margin-bottom:14px;}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+  .modal-actions button{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    border-radius:5px;
+    padding:8px 16px;
+    cursor:pointer;
+    border:none;
+  }
+  .modal-actions .confirm-btn{background:var(--blood);color:var(--paper);}
+  .modal-actions .confirm-btn:hover{background:var(--blood-bright);}
+  .modal-actions .cancel-btn{background:var(--paper-2);color:var(--ink-soft);border:1px solid var(--ink-soft);}
+  .modal-actions .cancel-btn:hover{background:rgba(0,0,0,0.06);}
+
+  /* ---- Backup bar ---- */
+  .backup-bar{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:16px;
+  }
+
+  ::-webkit-scrollbar{height:8px;width:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--ink-soft);border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="eyebrow">Ganesha Games — Edizione Italiana</div>
+    <h1>ALONE AGAINST FEAR</h1>
+    <div class="sub">Diario di sopravvivenza — compilalo mentre leggi il libro</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="scheda">📋 Scheda</button>
+    <button class="tab-btn" data-tab="mappa">🗺️ Mappa Città</button>
+    <button class="tab-btn" data-tab="dadi">🎲 Dadi</button>
+    <button class="tab-btn" data-tab="riferimento">🔦 Riferimento</button>
+  </div>
+
+  <div class="sheet">
+
+    <!-- ================= SCHEDA PERSONAGGIO ================= -->
+    <div class="panel active" id="panel-scheda">
+      <h2 class="section-title">Scheda Personaggio</h2>
+
+      <div class="identity-row">
+        <div class="field-name">
+          <label for="f-nome">Nome</label>
+          <input type="text" id="f-nome" placeholder="Come ti chiami?">
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box" data-stat="xp">
+          <label>XP</label>
+          <div class="stat-controls">
+            <button class="dec">−</button><span class="val">0</span><button class="inc">+</button>
+          </div>
+        </div>
+        <div class="stat-box sanity" data-stat="sanita">
+          <label>Sanità</label>
+          <div class="stat-controls">
+            <button class="dec">−</button><span class="val">0</span><button class="inc">+</button>
+          </div>
+        </div>
+        <div class="stat-box danger" data-stat="vita">
+          <label>Vita</label>
+          <div class="stat-controls">
+            <button class="dec">−</button><span class="val">0</span><button class="inc">+</button>
+          </div>
+        </div>
+        <div class="stat-box" data-stat="indizi">
+          <label>Indizi</label>
+          <div class="stat-controls">
+            <button class="dec">−</button><span class="val">0</span><button class="inc">+</button>
+          </div>
+        </div>
+        <div class="stat-box" data-stat="cibo">
+          <label>Cibo</label>
+          <div class="stat-controls">
+            <button class="dec">−</button><span class="val">0</span><button class="inc">+</button>
+          </div>
+        </div>
+        <div class="stat-box" data-stat="candele">
+          <label>Candele</label>
+          <div class="stat-controls">
+            <button class="dec">−</button><span class="val">0</span><button class="inc">+</button>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub-title">Parole Chiave</h3>
+      <input type="text" id="f-keywords" placeholder="Parole chiave guadagnate durante l'avventura...">
+
+      <div class="two-col">
+        <div>
+          <h3 class="sub-title">Ferite</h3>
+          <div class="chip-input-row">
+            <input type="text" id="in-ferite" placeholder="Aggiungi ferita...">
+            <button class="add-btn" data-list="ferite">Aggiungi</button>
+          </div>
+          <div class="chips" id="list-ferite"></div>
+        </div>
+        <div>
+          <h3 class="sub-title">Cicatrici Mentali</h3>
+          <div class="chip-input-row">
+            <input type="text" id="in-cicatrici" placeholder="Aggiungi cicatrice...">
+            <button class="add-btn" data-list="cicatrici">Aggiungi</button>
+          </div>
+          <div class="chips" id="list-cicatrici"></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h3 class="sub-title">Abilità</h3>
+          <div class="chip-input-row">
+            <input type="text" id="in-abilita" placeholder="Aggiungi abilità...">
+            <button class="add-btn" data-list="abilita">Aggiungi</button>
+          </div>
+          <div class="chips" id="list-abilita"></div>
+        </div>
+        <div>
+          <h3 class="sub-title">Abilità Arcane</h3>
+          <div class="chip-input-row">
+            <input type="text" id="in-arcane" placeholder="Aggiungi abilità arcana...">
+            <button class="add-btn" data-list="arcane">Aggiungi</button>
+          </div>
+          <div class="chips" id="list-arcane"></div>
+        </div>
+      </div>
+
+      <h3 class="sub-title">Armi &amp; Munizioni</h3>
+      <table class="weapons-table" id="weapons-table">
+        <thead><tr><th>Arma</th><th>Munizioni</th><th></th></tr></thead>
+        <tbody id="weapons-body"></tbody>
+      </table>
+      <button class="small-add" id="add-weapon">+ Aggiungi arma</button>
+
+      <h3 class="sub-title">Equipaggiamento</h3>
+      <div class="chip-input-row">
+        <input type="text" id="in-equip" placeholder="Aggiungi oggetto...">
+        <button class="add-btn" data-list="equip">Aggiungi</button>
+      </div>
+      <div class="chips" id="list-equip"></div>
+
+      <h3 class="sub-title">Libri Letti</h3>
+      <div class="chip-input-row">
+        <input type="text" id="in-libri" placeholder="Aggiungi libro letto...">
+        <button class="add-btn" data-list="libri">Aggiungi</button>
+      </div>
+      <div class="chips" id="list-libri"></div>
+
+      <div class="footer-bar">
+        <span class="save-status" id="save-status">Salvato automaticamente nel browser</span>
+        <button class="btn ghost" id="reset-char">Azzera scheda</button>
+      </div>
+    </div>
+
+    <!-- ================= MAPPA ================= -->
+    <div class="panel" id="panel-mappa">
+      <h2 class="section-title">Mappa Città</h2>
+
+      <div class="map-toolbar">
+        <div class="grp">Colonne
+          <button id="col-minus">−</button><span id="col-count">10</span><button id="col-plus">+</button>
+        </div>
+        <div class="grp">Righe
+          <button id="row-minus">−</button><span id="row-count">10</span><button id="row-plus">+</button>
+        </div>
+        <button class="btn ghost on-paper" id="reset-map">Azzera mappa</button>
+      </div>
+
+      <div class="map-legend">
+        <span><span class="legend-swatch" style="background:rgba(255,255,255,0.5);"></span>Non visitata</span>
+        <span><span class="legend-swatch" style="background:rgba(90,110,70,0.55);"></span>Visitata (numerata)</span>
+        <span><span class="legend-swatch" style="background:rgba(124,35,32,0.5);"></span>Cercata (S)</span>
+        <span><span class="legend-swatch" style="background:var(--beam);"></span>Ha una nota</span>
+      </div>
+
+      <div class="map-grid-wrap">
+        <div class="map-grid" id="map-grid"></div>
+      </div>
+
+      <p class="map-hint">Clicca una casella per numerarla in ordine di esplorazione. Clicca di nuovo per segnarla come "Cercata" (S). Un terzo click la svuota. Tieni premuto (o doppio click) per aggiungere una nota alla casella.</p>
+    </div>
+
+    <!-- ================= DADI ================= -->
+    <div class="panel" id="panel-dadi">
+      <h2 class="section-title">Dadi</h2>
+
+      <div class="dice-panel">
+
+        <div class="dice-card">
+          <h3 class="sub-title" style="margin-top:0;">Tiro libero</h3>
+          <div class="preset-row">
+            <button class="preset-btn" data-preset="1-6">1d6</button>
+            <button class="preset-btn" data-preset="2-6">2d6</button>
+            <button class="preset-btn" data-preset="3-6">3d6</button>
+            <button class="preset-btn" id="preset-d3">D3</button>
+          </div>
+          <div class="dice-row">
+            <div class="dice-field">
+              <label for="dice-n">N. dadi</label>
+              <input type="number" id="dice-n" min="1" max="20" value="1">
+            </div>
+            <div class="dice-field">
+              <label for="dice-s">Facce</label>
+              <input type="number" id="dice-s" min="2" max="100" value="6">
+            </div>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="dice-explode">
+            <label for="dice-explode" style="margin:0;">Esplosione sul 6 (ogni 6 aggiunge un altro d6)</label>
+          </div>
+          <button class="roll-btn" id="roll-free">🎲 Tira</button>
+          <div class="dice-result" id="free-result"></div>
+        </div>
+
+        <div class="dice-card">
+          <h3 class="sub-title" style="margin-top:0;">Attacco / Difesa</h3>
+          <p style="font-size:13px;color:var(--ink-soft);margin-top:0;">Tira d6 + modificatore, con esplosione sul 6 automatica. Pareggia o supera il Livello (L) del bersaglio per riuscire.</p>
+          <div class="dice-row">
+            <div class="dice-field">
+              <label for="ad-mod">Modificatore</label>
+              <input type="number" id="ad-mod" value="0">
+            </div>
+            <div class="dice-field">
+              <label for="ad-target">Livello (L) bersaglio</label>
+              <input type="number" id="ad-target" min="1" value="3">
+            </div>
+          </div>
+          <button class="roll-btn" id="roll-ad">🎯 Tira Attacco/Difesa</button>
+          <div class="dice-result" id="ad-result"></div>
+        </div>
+
+      </div>
+
+      <div class="dice-card" style="margin-top:20px;">
+        <h3 class="sub-title" style="margin-top:0;">Cronologia tiri</h3>
+        <div class="dice-history" id="dice-history"></div>
+        <button class="clear-hist" id="clear-history">Svuota cronologia</button>
+      </div>
+    </div>
+
+    <!-- ================= RIFERIMENTO ================= -->
+    <div class="panel" id="panel-riferimento">
+      <h2 class="section-title">Riferimento Rapido</h2>
+
+      <div class="ref-block">
+        <span class="lbl">Tiri di dado</span>
+        <p>Un risultato di 1 è sempre un fallimento e un 6 è sempre un successo, a prescindere dai modificatori applicati.</p>
+        <p><em>Esplosione sul 6:</em> su qualsiasi tiro di d6 (fuori dalle tabelle), se esce 6 aggiungi un altro d6 al risultato. Continua finché non esce un valore diverso da 6.</p>
+      </div>
+
+      <div class="ref-block">
+        <span class="lbl">Attacco e Difesa</span>
+        <p><em>Tiro di Attacco:</em> tira d6 + modificatori di arma e abilità. Se pareggi o superi il Livello (L) del bersaglio, infliggi Danno. Se superi il L più volte, applica il Danno più volte.</p>
+        <p><em>Tiro di Difesa:</em> tira d6 + modificatori di abilità. Se pareggi o superi il L del bersaglio, eviti il suo Attacco.</p>
+      </div>
+
+      <div class="ref-block">
+        <span class="lbl">Risorse</span>
+        <p><em>Cibo:</em> consuma 1 Cibo ogni 5 caselle esplorate, oppure subisci 1 Danno.</p>
+        <p><em>Vita:</em> puoi provare a evitare un danno tirando sulla tabella delle Ferite. Le Ferite sono permanenti. Se la Vita arriva a 0, muori e la partita finisce.</p>
+        <p><em>Sanità:</em> puoi provare a evitare una perdita di Sanità tirando sulla tabella della Follia. Le Cicatrici Mentali sono permanenti. Se la Sanità arriva a 0, impazzisci e la partita finisce.</p>
+      </div>
+
+      <div class="ref-block">
+        <span class="lbl">Struttura di una partita</span>
+        <p>Crea o riprendi un personaggio, tira sulla tabella delle Missioni per il tuo obiettivo, poi muoviti sulla mappa città numerando ogni casella visitata. Se torni in una casella già visitata, c'è 1 possibilità su 6 di un incontro casuale. Ogni casella può essere Cercata una sola volta a partita. Quando completi la missione e torni a Casa, la partita finisce.</p>
+      </div>
+
+      <p class="map-hint">Questo riepilogo è una sintesi pratica per il tavolo: per le regole complete, i mostri, le tabelle e gli scenari fai sempre riferimento al manuale originale.</p>
+    </div>
+
+  </div>
+
+  <div class="backup-bar">
+    <button class="btn ghost" id="export-backup">⬇ Esporta backup (JSON)</button>
+    <button class="btn ghost" id="import-backup">⬆ Importa backup</button>
+    <input type="file" id="import-file" accept=".json" style="display:none;">
+  </div>
+
+  <div style="text-align:center;margin-top:14px;">
+    <span class="save-status">Alone Against Fear di Andrea Sfiligoi © Ganesha Games — strumento non ufficiale per uso personale al tavolo</span>
+  </div>
+</div>
+
+<!-- Custom modal, replaces native confirm()/prompt() which some sandboxed browsers block -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <h3 id="modal-title">Conferma</h3>
+    <p id="modal-message"></p>
+    <input type="text" id="modal-input" style="display:none;">
+    <div class="modal-actions">
+      <button class="cancel-btn" id="modal-cancel">Annulla</button>
+      <button class="confirm-btn" id="modal-confirm">Conferma</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = "aaf_scheda_v1";
+
+const defaultState = {
+  character: {
+    nome:"", xp:0, sanita:0, vita:0, indizi:0, cibo:0, candele:0,
+    keywords:"",
+    ferite:[], cicatrici:[], abilita:[], arcane:[], equip:[], libri:[],
+    weapons:[]
+  },
+  map: { rows:10, cols:10, cells:{}, counter:0 },
+  diceHistory: []
+};
+
+let state = loadState();
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return JSON.parse(JSON.stringify(defaultState));
+    const parsed = JSON.parse(raw);
+    return Object.assign(JSON.parse(JSON.stringify(defaultState)), parsed, {
+      character: Object.assign(JSON.parse(JSON.stringify(defaultState.character)), parsed.character||{}),
+      map: Object.assign(JSON.parse(JSON.stringify(defaultState.map)), parsed.map||{}),
+      diceHistory: parsed.diceHistory || []
+    });
+  }catch(e){
+    console.error("Errore caricamento salvataggio:", e);
+    return JSON.parse(JSON.stringify(defaultState));
+  }
+}
+
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const s = document.getElementById('save-status');
+    if(s){ s.textContent = "Salvato — " + new Date().toLocaleTimeString('it-IT'); }
+  }catch(e){
+    console.error("Errore salvataggio:", e);
+  }
+}
+
+/* =========================================================
+   Custom modal (confirm / prompt replacement)
+   ========================================================= */
+const modalOverlay = document.getElementById('modal-overlay');
+const modalTitle = document.getElementById('modal-title');
+const modalMessage = document.getElementById('modal-message');
+const modalInput = document.getElementById('modal-input');
+const modalCancel = document.getElementById('modal-cancel');
+const modalConfirm = document.getElementById('modal-confirm');
+let modalResolver = null;
+
+function showModal({title, message, withInput=false, inputValue="", confirmLabel="Conferma"}){
+  return new Promise(resolve=>{
+    modalResolver = resolve;
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    modalConfirm.textContent = confirmLabel;
+    if(withInput){
+      modalInput.style.display = "block";
+      modalInput.value = inputValue;
+    } else {
+      modalInput.style.display = "none";
+      modalInput.value = "";
+    }
+    modalOverlay.classList.add('active');
+    if(withInput){ setTimeout(()=>modalInput.focus(), 50); }
+  });
+}
+
+function closeModal(result){
+  modalOverlay.classList.remove('active');
+  if(modalResolver){ modalResolver(result); modalResolver = null; }
+}
+
+modalCancel.addEventListener('click', ()=>closeModal(null));
+modalConfirm.addEventListener('click', ()=>{
+  if(modalInput.style.display === "block"){
+    closeModal(modalInput.value);
+  } else {
+    closeModal(true);
+  }
+});
+modalInput.addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ e.preventDefault(); closeModal(modalInput.value); }
+});
+modalOverlay.addEventListener('click', e=>{
+  if(e.target === modalOverlay) closeModal(null);
+});
+
+async function customConfirm(message, title="Conferma"){
+  const res = await showModal({title, message, withInput:false, confirmLabel:"Sì, procedi"});
+  return res === true;
+}
+async function customPrompt(message, inputValue="", title="Nota"){
+  const res = await showModal({title, message, withInput:true, inputValue, confirmLabel:"Salva"});
+  return res;
+}
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------- Identity & keywords ---------- */
+const fNome = document.getElementById('f-nome');
+const fKeywords = document.getElementById('f-keywords');
+fNome.addEventListener('input', ()=>{ state.character.nome = fNome.value; saveState(); });
+fKeywords.addEventListener('input', ()=>{ state.character.keywords = fKeywords.value; saveState(); });
+
+/* ---------- Stat boxes ---------- */
+document.querySelectorAll('.stat-box').forEach(box=>{
+  const key = box.dataset.stat;
+  box.querySelector('.inc').addEventListener('click', ()=>{
+    state.character[key] = (state.character[key]||0) + 1;
+    render();
+    saveState();
+  });
+  box.querySelector('.dec').addEventListener('click', ()=>{
+    state.character[key] = Math.max(0, (state.character[key]||0) - 1);
+    render();
+    saveState();
+  });
+});
+
+/* ---------- Chip lists ---------- */
+const chipLists = {
+  ferite:{input:'in-ferite', container:'list-ferite'},
+  cicatrici:{input:'in-cicatrici', container:'list-cicatrici'},
+  abilita:{input:'in-abilita', container:'list-abilita'},
+  arcane:{input:'in-arcane', container:'list-arcane'},
+  equip:{input:'in-equip', container:'list-equip'},
+  libri:{input:'in-libri', container:'list-libri'}
+};
+
+document.querySelectorAll('button.add-btn').forEach(btn=>{
+  const key = btn.dataset.list;
+  const cfg = chipLists[key];
+  const inputEl = document.getElementById(cfg.input);
+  function addItem(){
+    const v = inputEl.value.trim();
+    if(!v) return;
+    state.character[key].push(v);
+    inputEl.value = "";
+    renderChips(key);
+    saveState();
+  }
+  btn.addEventListener('click', addItem);
+  inputEl.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addItem(); } });
+});
+
+function renderChips(key){
+  const cfg = chipLists[key];
+  const container = document.getElementById(cfg.container);
+  const items = state.character[key];
+  container.innerHTML = "";
+  if(items.length===0){
+    container.innerHTML = '<span class="empty-hint">Nessun elemento ancora.</span>';
+    return;
+  }
+  items.forEach((item, idx)=>{
+    const chip = document.createElement('span');
+    chip.className='chip';
+    chip.innerHTML = `<span>${escapeHtml(item)}</span><span class="rm" data-key="${key}" data-idx="${idx}">×</span>`;
+    container.appendChild(chip);
+  });
+  container.querySelectorAll('.rm').forEach(rm=>{
+    rm.addEventListener('click', ()=>{
+      const k = rm.dataset.key;
+      const i = parseInt(rm.dataset.idx,10);
+      state.character[k].splice(i,1);
+      renderChips(k);
+      saveState();
+    });
+  });
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+/* ---------- Weapons table ---------- */
+const weaponsBody = document.getElementById('weapons-body');
+document.getElementById('add-weapon').addEventListener('click', ()=>{
+  state.character.weapons.push({nome:"", munizioni:""});
+  renderWeapons();
+  saveState();
+});
+
+function renderWeapons(){
+  weaponsBody.innerHTML = "";
+  if(state.character.weapons.length===0){
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="3" class="empty-hint">Nessuna arma ancora.</td>';
+    weaponsBody.appendChild(tr);
+    return;
+  }
+  state.character.weapons.forEach((w, idx)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="w-nome" data-idx="${idx}" value="${escapeAttr(w.nome)}" placeholder="Nome arma"></td>
+      <td><input type="text" class="w-ammo ammo" data-idx="${idx}" value="${escapeAttr(w.munizioni)}" placeholder="0"></td>
+      <td><button class="rm-row" data-idx="${idx}">×</button></td>
+    `;
+    weaponsBody.appendChild(tr);
+  });
+  weaponsBody.querySelectorAll('.w-nome').forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      state.character.weapons[inp.dataset.idx].nome = inp.value;
+      saveState();
+    });
+  });
+  weaponsBody.querySelectorAll('.w-ammo').forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      state.character.weapons[inp.dataset.idx].munizioni = inp.value;
+      saveState();
+    });
+  });
+  weaponsBody.querySelectorAll('.rm-row').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.character.weapons.splice(parseInt(btn.dataset.idx,10),1);
+      renderWeapons();
+      saveState();
+    });
+  });
+}
+
+function escapeAttr(str){
+  return (str||"").replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+/* ---------- Reset character ---------- */
+document.getElementById('reset-char').addEventListener('click', async ()=>{
+  const ok = await customConfirm("Azzerare completamente la scheda personaggio? Questa azione non si può annullare.", "Azzera scheda");
+  if(!ok) return;
+  state.character = JSON.parse(JSON.stringify(defaultState.character));
+  render();
+  saveState();
+});
+
+/* ---------- Map ---------- */
+const mapGrid = document.getElementById('map-grid');
+const colCountEl = document.getElementById('col-count');
+const rowCountEl = document.getElementById('row-count');
+
+document.getElementById('col-plus').addEventListener('click', ()=>{ state.map.cols = Math.min(20, state.map.cols+1); renderMap(); saveState(); });
+document.getElementById('col-minus').addEventListener('click', ()=>{ state.map.cols = Math.max(3, state.map.cols-1); renderMap(); saveState(); });
+document.getElementById('row-plus').addEventListener('click', ()=>{ state.map.rows = Math.min(20, state.map.rows+1); renderMap(); saveState(); });
+document.getElementById('row-minus').addEventListener('click', ()=>{ state.map.rows = Math.max(3, state.map.rows-1); renderMap(); saveState(); });
+
+document.getElementById('reset-map').addEventListener('click', async ()=>{
+  const ok = await customConfirm("Azzerare completamente la mappa? Tutte le caselle numerate, cercate e le note andranno perse.", "Azzera mappa");
+  if(!ok) return;
+  state.map.cells = {};
+  state.map.counter = 0;
+  renderMap();
+  saveState();
+});
+
+function renderMap(){
+  colCountEl.textContent = state.map.cols;
+  rowCountEl.textContent = state.map.rows;
+  mapGrid.style.gridTemplateColumns = `repeat(${state.map.cols}, 38px)`;
+  mapGrid.innerHTML = "";
+  for(let r=0;r<state.map.rows;r++){
+    for(let c=0;c<state.map.cols;c++){
+      const key = r+"_"+c;
+      const cellData = state.map.cells[key] || {state:'empty', number:null, note:""};
+      const div = document.createElement('div');
+      div.className = 'cell' + (cellData.state==='numbered' ? ' numbered' : cellData.state==='searched' ? ' searched' : '');
+      div.dataset.key = key;
+      if(cellData.state==='numbered') div.textContent = cellData.number;
+      else if(cellData.state==='searched') div.textContent = (cellData.number ? cellData.number+'S' : 'S');
+      if(cellData.note){
+        const dot = document.createElement('span');
+        dot.className='note-dot';
+        div.appendChild(dot);
+      }
+      div.title = cellData.note ? cellData.note : "";
+      div.addEventListener('click', ()=>onCellClick(key));
+      div.addEventListener('dblclick', (e)=>{ e.stopPropagation(); onCellNote(key); });
+      let pressTimer;
+      div.addEventListener('touchstart', ()=>{ pressTimer = setTimeout(()=>onCellNote(key), 600); });
+      div.addEventListener('touchend', ()=>clearTimeout(pressTimer));
+      mapGrid.appendChild(div);
+    }
+  }
+}
+
+function onCellClick(key){
+  const cellData = state.map.cells[key] || {state:'empty', number:null, note:""};
+  if(cellData.state==='empty'){
+    state.map.counter += 1;
+    cellData.state = 'numbered';
+    cellData.number = state.map.counter;
+  } else if(cellData.state==='numbered'){
+    cellData.state = 'searched';
+  } else {
+    cellData.state = 'empty';
+    cellData.number = null;
+  }
+  state.map.cells[key] = cellData;
+  renderMap();
+  saveState();
+}
+
+async function onCellNote(key){
+  const cellData = state.map.cells[key] || {state:'empty', number:null, note:""};
+  const note = await customPrompt("Scrivi una nota per questa casella (lascia vuoto per rimuoverla):", cellData.note||"", "Nota casella");
+  if(note===null) return;
+  cellData.note = note.trim();
+  state.map.cells[key] = cellData;
+  renderMap();
+  saveState();
+}
+
+/* =========================================================
+   Dice roller
+   ========================================================= */
+const diceNInput = document.getElementById('dice-n');
+const diceSInput = document.getElementById('dice-s');
+const diceExplode = document.getElementById('dice-explode');
+const freeResult = document.getElementById('free-result');
+const adResult = document.getElementById('ad-result');
+const diceHistoryEl = document.getElementById('dice-history');
+
+function rollOneDie(sides, explode){
+  let total = 0;
+  let rolls = [];
+  let r;
+  do{
+    r = 1 + Math.floor(Math.random()*sides);
+    rolls.push(r);
+    total += r;
+  } while(explode && r === 6 && sides === 6);
+  return {total, rolls};
+}
+
+function addHistory(label, detail){
+  state.diceHistory.unshift({label, detail, time: new Date().toLocaleTimeString('it-IT')});
+  state.diceHistory = state.diceHistory.slice(0, 30);
+  renderHistory();
+  saveState();
+}
+
+function renderHistory(){
+  diceHistoryEl.innerHTML = "";
+  if(state.diceHistory.length===0){
+    diceHistoryEl.innerHTML = '<span class="empty-hint">Nessun tiro ancora.</span>';
+    return;
+  }
+  state.diceHistory.forEach(h=>{
+    const div = document.createElement('div');
+    div.className='entry';
+    div.innerHTML = `<span>${h.time} — ${escapeHtml(h.label)}</span><span>${escapeHtml(h.detail)}</span>`;
+    diceHistoryEl.appendChild(div);
+  });
+}
+
+document.getElementById('clear-history').addEventListener('click', async ()=>{
+  const ok = await customConfirm("Svuotare la cronologia dei tiri?", "Svuota cronologia");
+  if(!ok) return;
+  state.diceHistory = [];
+  renderHistory();
+  saveState();
+});
+
+document.querySelectorAll('.preset-btn[data-preset]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const [n,s] = btn.dataset.preset.split('-');
+    diceNInput.value = n;
+    diceSInput.value = s;
+    rollFree();
+  });
+});
+
+document.getElementById('preset-d3').addEventListener('click', rollD3);
+
+document.getElementById('roll-free').addEventListener('click', rollFree);
+
+function rollD3(){
+  // Il gioco non usa un dado a 3 facce reale: si tira 1d6 e si dimezza
+  // (1-2 = 1, 3-4 = 2, 5-6 = 3).
+  const raw = 1 + Math.floor(Math.random()*6);
+  const converted = raw <= 2 ? 1 : raw <= 4 ? 2 : 3;
+  freeResult.innerHTML = `
+    <div class="total">${converted}</div>
+    <div class="breakdown">D3 (tiro d6 dimezzato): risultato grezzo ${raw} → ${converted}</div>
+  `;
+  addHistory('D3', `d6=${raw} → ${converted}`);
+}
+
+function rollFree(){
+  const n = Math.max(1, Math.min(20, parseInt(diceNInput.value,10)||1));
+  const s = Math.max(2, Math.min(100, parseInt(diceSInput.value,10)||6));
+  const explode = diceExplode.checked;
+  let total = 0;
+  let allRolls = [];
+  for(let i=0;i<n;i++){
+    const res = rollOneDie(s, explode);
+    total += res.total;
+    allRolls.push(res.rolls.join('+'));
+  }
+  freeResult.innerHTML = `
+    <div class="total">${total}</div>
+    <div class="breakdown">${n}d${s}${explode?' (esplosione attiva)':''}: ${allRolls.join(' | ')}</div>
+  `;
+  addHistory(`${n}d${s}${explode?' esplosivo':''}`, `Totale ${total}`);
+}
+
+document.getElementById('roll-ad').addEventListener('click', ()=>{
+  const mod = parseInt(document.getElementById('ad-mod').value,10)||0;
+  const target = parseInt(document.getElementById('ad-target').value,10)||1;
+  const res = rollOneDie(6, true);
+  const total = res.total + mod;
+  const success = total >= target;
+  adResult.innerHTML = `
+    <div class="total">${total}</div>
+    <div class="breakdown">Dado: ${res.rolls.join('+')} ${mod>=0?'+':''}${mod} mod — vs L ${target}</div>
+    <div class="outcome ${success?'success':'fail'}">${success ? '✔ RIUSCITO' : '✘ FALLITO'}</div>
+  `;
+  addHistory('Attacco/Difesa', `${total} vs L${target} — ${success?'riuscito':'fallito'}`);
+});
+
+/* =========================================================
+   Backup export / import
+   ========================================================= */
+document.getElementById('export-backup').addEventListener('click', ()=>{
+  const dataStr = JSON.stringify(state, null, 2);
+  const blob = new Blob([dataStr], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `alone_against_fear_backup_${today}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+const importFileInput = document.getElementById('import-file');
+document.getElementById('import-backup').addEventListener('click', ()=>{
+  importFileInput.value = "";
+  importFileInput.click();
+});
+importFileInput.addEventListener('change', async ()=>{
+  const file = importFileInput.files[0];
+  if(!file) return;
+  try{
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+    const ok = await customConfirm("Importare questo backup? Sovrascriverà scheda, mappa e cronologia dadi attuali.", "Importa backup");
+    if(!ok) return;
+    state = Object.assign(JSON.parse(JSON.stringify(defaultState)), parsed, {
+      character: Object.assign(JSON.parse(JSON.stringify(defaultState.character)), parsed.character||{}),
+      map: Object.assign(JSON.parse(JSON.stringify(defaultState.map)), parsed.map||{}),
+      diceHistory: parsed.diceHistory || []
+    });
+    render();
+    saveState();
+  }catch(e){
+    console.error("Errore importazione:", e);
+    await showModal({title:"Errore", message:"Il file selezionato non è un backup valido.", withInput:false, confirmLabel:"OK"});
+  }
+});
+
+/* ---------- Render everything ---------- */
+function render(){
+  fNome.value = state.character.nome;
+  fKeywords.value = state.character.keywords;
+  document.querySelectorAll('.stat-box').forEach(box=>{
+    const key = box.dataset.stat;
+    box.querySelector('.val').textContent = state.character[key]||0;
+  });
+  Object.keys(chipLists).forEach(renderChips);
+  renderWeapons();
+  renderMap();
+  renderHistory();
+}
+
+render();
+</script>
+</body>
+</html>
