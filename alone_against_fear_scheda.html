@@ -237,6 +237,18 @@
     font-family:'JetBrains Mono',monospace;
   }
   .empty-hint{color:var(--ink-soft);font-style:italic;font-size:13px;}
+  .chip-storico{
+    background:rgba(0,0,0,0.02);
+    border:1px dashed var(--ink-soft);
+    color:var(--ink-soft);
+    cursor:pointer;
+  }
+  .chip-storico:hover{
+    border-color:var(--sanity);
+    color:var(--ink);
+    background:rgba(90,110,70,0.12);
+  }
+  .chip-storico .rm{color:var(--blood);}
 
   /* ---- Weapons table ---- */
   .weapons-table{width:100%;border-collapse:collapse;margin-bottom:8px;}
@@ -638,12 +650,34 @@
       </table>
       <button class="small-add" id="add-weapon">+ Aggiungi arma</button>
 
+      <div style="margin-top:12px;">
+        <span class="empty-hint" style="display:block;margin-bottom:6px;">Armi già trovate in passato — tocca per aggiungerle di nuovo:</span>
+        <div class="chips" id="list-weapons-storico"></div>
+      </div>
+
+      <h3 class="sub-title">Mostri Incontrati</h3>
+      <div class="chip-input-row">
+        <input type="text" id="in-monster-name" placeholder="Nome mostro..." style="flex:2;">
+        <input type="number" id="in-monster-level" placeholder="L" min="1" style="flex:0 0 60px;">
+        <button class="add-btn" id="add-monster">Aggiungi</button>
+      </div>
+      <div class="chips" id="list-monsters"></div>
+      <div style="margin-top:12px;">
+        <span class="empty-hint" style="display:block;margin-bottom:6px;">Mostri già incontrati in passato — tocca per rimetterli in gioco:</span>
+        <div class="chips" id="list-monsters-storico"></div>
+      </div>
+
       <h3 class="sub-title">Equipaggiamento</h3>
       <div class="chip-input-row">
         <input type="text" id="in-equip" placeholder="Aggiungi oggetto...">
         <button class="add-btn" data-list="equip">Aggiungi</button>
       </div>
       <div class="chips" id="list-equip"></div>
+
+      <div style="margin-top:12px;">
+        <span class="empty-hint" style="display:block;margin-bottom:6px;">Oggetti già trovati in passato — tocca per aggiungerli di nuovo:</span>
+        <div class="chips" id="list-equip-storico"></div>
+      </div>
 
       <h3 class="sub-title">Libri Letti</h3>
       <div class="chip-input-row">
@@ -809,7 +843,9 @@ const defaultState = {
     nome:"", xp:0, sanita:0, vita:0, indizi:0, cibo:0, candele:0,
     keywords:"", missione:"",
     ferite:[], cicatrici:[], abilita:[], arcane:[], equip:[], libri:[],
-    weapons:[]
+    equipStorico:[],
+    weapons:[], weaponsStorico:[],
+    monsters:[], monstersStorico:[]
   },
   map: { rows:10, cols:10, cells:{}, counter:0 },
   diceHistory: []
@@ -952,6 +988,7 @@ document.querySelectorAll('button.add-btn').forEach(btn=>{
     const v = inputEl.value.trim();
     if(!v) return;
     state.character[key].push(v);
+    if(key==='equip'){ addToEquipStorico(v); }
     inputEl.value = "";
     renderChips(key);
     saveState();
@@ -981,6 +1018,50 @@ function renderChips(key){
       const i = parseInt(rm.dataset.idx,10);
       state.character[k].splice(i,1);
       renderChips(k);
+      saveState();
+    });
+  });
+}
+
+/* ---------- Equipment "storico" library (persists even after removal from active list) ---------- */
+function addToEquipStorico(item){
+  if(!state.character.equipStorico) state.character.equipStorico = [];
+  const exists = state.character.equipStorico.some(s => s.toLowerCase() === item.toLowerCase());
+  if(!exists){
+    state.character.equipStorico.push(item);
+  }
+  renderEquipStorico();
+}
+
+function renderEquipStorico(){
+  const container = document.getElementById('list-equip-storico');
+  const items = state.character.equipStorico || [];
+  container.innerHTML = "";
+  if(items.length===0){
+    container.innerHTML = '<span class="empty-hint">Ancora nessun oggetto in archivio.</span>';
+    return;
+  }
+  items.forEach((item, idx)=>{
+    const chip = document.createElement('span');
+    chip.className='chip chip-storico';
+    chip.innerHTML = `<span class="storico-add" data-idx="${idx}">${escapeHtml(item)}</span><span class="rm storico-rm" data-idx="${idx}">×</span>`;
+    container.appendChild(chip);
+  });
+  container.querySelectorAll('.storico-add').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const idx = parseInt(el.dataset.idx,10);
+      const item = state.character.equipStorico[idx];
+      state.character.equip.push(item);
+      renderChips('equip');
+      saveState();
+    });
+  });
+  container.querySelectorAll('.storico-rm').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const idx = parseInt(el.dataset.idx,10);
+      state.character.equipStorico.splice(idx,1);
+      renderEquipStorico();
       saveState();
     });
   });
@@ -1020,12 +1101,14 @@ function renderWeapons(){
   weaponsBody.querySelectorAll('.w-nome').forEach(inp=>{
     inp.addEventListener('input', ()=>{
       state.character.weapons[inp.dataset.idx].nome = inp.value;
+      syncWeaponToStorico(state.character.weapons[inp.dataset.idx]);
       saveState();
     });
   });
   weaponsBody.querySelectorAll('.w-ammo').forEach(inp=>{
     inp.addEventListener('input', ()=>{
       state.character.weapons[inp.dataset.idx].munizioni = inp.value;
+      syncWeaponToStorico(state.character.weapons[inp.dataset.idx]);
       saveState();
     });
   });
@@ -1040,6 +1123,145 @@ function renderWeapons(){
 
 function escapeAttr(str){
   return (str||"").replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+/* ---------- Weapons "storico" library ---------- */
+function syncWeaponToStorico(w){
+  const nome = (w.nome||"").trim();
+  if(!nome) return;
+  if(!state.character.weaponsStorico) state.character.weaponsStorico = [];
+  const existing = state.character.weaponsStorico.find(s => s.nome.toLowerCase() === nome.toLowerCase());
+  if(existing){
+    existing.munizioni = w.munizioni;
+  } else {
+    state.character.weaponsStorico.push({nome:w.nome, munizioni:w.munizioni});
+  }
+  renderWeaponsStorico();
+}
+
+function renderWeaponsStorico(){
+  const container = document.getElementById('list-weapons-storico');
+  const items = state.character.weaponsStorico || [];
+  container.innerHTML = "";
+  if(items.length===0){
+    container.innerHTML = '<span class="empty-hint">Ancora nessuna arma in archivio.</span>';
+    return;
+  }
+  items.forEach((w, idx)=>{
+    const label = w.munizioni ? `${w.nome} — Munizioni: ${w.munizioni}` : w.nome;
+    const chip = document.createElement('span');
+    chip.className='chip chip-storico';
+    chip.innerHTML = `<span class="wstorico-add" data-idx="${idx}">${escapeHtml(label)}</span><span class="rm wstorico-rm" data-idx="${idx}">×</span>`;
+    container.appendChild(chip);
+  });
+  container.querySelectorAll('.wstorico-add').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const idx = parseInt(el.dataset.idx,10);
+      const w = state.character.weaponsStorico[idx];
+      state.character.weapons.push({nome:w.nome, munizioni:w.munizioni});
+      renderWeapons();
+      saveState();
+    });
+  });
+  container.querySelectorAll('.wstorico-rm').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const idx = parseInt(el.dataset.idx,10);
+      state.character.weaponsStorico.splice(idx,1);
+      renderWeaponsStorico();
+      saveState();
+    });
+  });
+}
+
+/* ---------- Monsters encountered ---------- */
+const inMonsterName = document.getElementById('in-monster-name');
+const inMonsterLevel = document.getElementById('in-monster-level');
+
+function addMonster(){
+  const nome = inMonsterName.value.trim();
+  const livello = inMonsterLevel.value.trim();
+  if(!nome) return;
+  state.character.monsters.push({nome, livello});
+  upsertMonsterStorico(nome, livello);
+  inMonsterName.value = "";
+  inMonsterLevel.value = "";
+  renderMonsters();
+  saveState();
+}
+document.getElementById('add-monster').addEventListener('click', addMonster);
+inMonsterName.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addMonster(); } });
+inMonsterLevel.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addMonster(); } });
+
+function upsertMonsterStorico(nome, livello){
+  if(!state.character.monstersStorico) state.character.monstersStorico = [];
+  const existing = state.character.monstersStorico.find(m => m.nome.toLowerCase() === nome.toLowerCase());
+  if(existing){
+    existing.livello = livello;
+  } else {
+    state.character.monstersStorico.push({nome, livello});
+  }
+  renderMonstersStorico();
+}
+
+function renderMonsters(){
+  const container = document.getElementById('list-monsters');
+  const items = state.character.monsters || [];
+  container.innerHTML = "";
+  if(items.length===0){
+    container.innerHTML = '<span class="empty-hint">Nessun mostro attivo al momento.</span>';
+    return;
+  }
+  items.forEach((m, idx)=>{
+    const label = m.livello ? `${m.nome} (L${m.livello})` : m.nome;
+    const chip = document.createElement('span');
+    chip.className='chip';
+    chip.innerHTML = `<span>${escapeHtml(label)}</span><span class="rm monster-rm" data-idx="${idx}">×</span>`;
+    container.appendChild(chip);
+  });
+  container.querySelectorAll('.monster-rm').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const idx = parseInt(el.dataset.idx,10);
+      state.character.monsters.splice(idx,1);
+      renderMonsters();
+      saveState();
+    });
+  });
+}
+
+function renderMonstersStorico(){
+  const container = document.getElementById('list-monsters-storico');
+  const items = state.character.monstersStorico || [];
+  container.innerHTML = "";
+  if(items.length===0){
+    container.innerHTML = '<span class="empty-hint">Ancora nessun mostro in archivio.</span>';
+    return;
+  }
+  items.forEach((m, idx)=>{
+    const label = m.livello ? `${m.nome} (L${m.livello})` : m.nome;
+    const chip = document.createElement('span');
+    chip.className='chip chip-storico';
+    chip.innerHTML = `<span class="mstorico-add" data-idx="${idx}">${escapeHtml(label)}</span><span class="rm mstorico-rm" data-idx="${idx}">×</span>`;
+    container.appendChild(chip);
+  });
+  container.querySelectorAll('.mstorico-add').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const idx = parseInt(el.dataset.idx,10);
+      const m = state.character.monstersStorico[idx];
+      state.character.monsters.push({nome:m.nome, livello:m.livello});
+      renderMonsters();
+      saveState();
+    });
+  });
+  container.querySelectorAll('.mstorico-rm').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const idx = parseInt(el.dataset.idx,10);
+      state.character.monstersStorico.splice(idx,1);
+      renderMonstersStorico();
+      saveState();
+    });
+  });
 }
 
 /* ---------- Reset character ---------- */
@@ -1288,7 +1510,11 @@ function render(){
     box.querySelector('.val').textContent = state.character[key]||0;
   });
   Object.keys(chipLists).forEach(renderChips);
+  renderEquipStorico();
   renderWeapons();
+  renderWeaponsStorico();
+  renderMonsters();
+  renderMonstersStorico();
   renderMap();
   renderHistory();
 }
